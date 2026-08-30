@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>Occupiednorth.com</title>
+
+<style>
+  :root {
+    --ink: #1c1f1a;
+    --paper: #f6f4ee;
+    --line: #d8d3c5;
+    --accent: #3d5a3d;
+    --accent-soft: #e7ede3;
+    --muted: #6b6a5f;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Georgia', 'Iowan Old Style', serif;
+    line-height: 1.6;
+  }
+
+  header.site {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 28px 6vw;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .brand {
+    font-size: 1.1rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 600;
+  }
+
+  nav.site a {
+    color: var(--muted);
+    text-decoration: none;
+    margin-left: 24px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  nav.site a:hover { color: var(--ink); }
+
+  .hero {
+    padding: 10vh 6vw 8vh;
+    max-width: 900px;
+  }
+
+  .hero .eyebrow {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 18px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.6rem, 6vw, 4.4rem);
+    margin: 0 0 24px;
+    line-height: 1.05;
+  }
+
+  .hero p {
+    font-size: 1.15rem;
+    color: var(--muted);
+    max-width: 60ch;
+  }
+
+  section.map-section {
+    padding: 0 6vw 8vh;
+    scroll-margin-top: 24px;
+  }
+
+  section.map-section h2.map-heading {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 16px;
+  }
+
+  .map-frame {
+    border: 1px solid var(--line);
+    background: #fff;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    /* Map size lives here. aspect-ratio controls the shape on phones,
+       min-height guarantees it never gets too short on desktop. */
+    aspect-ratio: 4 / 5;
+    min-height: 420px;
+  }
+
+  @media (min-width: 700px) {
+    .map-frame {
+      /* Wider, shorter box once there's room — puts more focus on the
+         map itself instead of empty page around it. */
+      aspect-ratio: 16 / 10;
+      min-height: 600px;
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .map-frame {
+      min-height: 760px;
+    }
+  }
+
+  .map-frame iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+
+  .map-fallback {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: var(--muted);
+    text-align: center;
+    padding: 20px;
+  }
+
+  .map-fallback a {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  section.about {
+    padding: 0 6vw 10vh;
+    max-width: 780px;
+    scroll-margin-top: 24px;
+  }
+
+  section.about h2 {
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+  }
+
+  section.about p {
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .legend {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 32px;
+    padding: 0 6vw 10vh;
+  }
+
+  .legend .card {
+    border: 1px solid var(--line);
+    background: var(--accent-soft);
+    padding: 20px;
+  }
+
+  .legend .card h3 {
+    margin: 0 0 8px;
+    font-size: 1rem;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .legend .card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  footer.site {
+    border-top: 1px solid var(--line);
+    padding: 24px 6vw;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 0.8rem;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  footer.site a { color: var(--muted); }
+
+  section.contact {
+    padding: 0 6vw 10vh;
+    max-width: 560px;
+  }
+
+  section.contact h2 {
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+  }
+
+  section.contact > p {
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .contact-form label {
+    display: block;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .contact-form input,
+  .contact-form textarea {
+    width: 100%;
+    background: #fff;
+    border: 1px solid var(--line);
+    padding: 12px 14px;
+    font-family: 'Georgia', 'Iowan Old Style', serif;
+    font-size: 1rem;
+    color: var(--ink);
+  }
+
+  .contact-form input:focus,
+  .contact-form textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .contact-form textarea {
+    min-height: 140px;
+    resize: vertical;
+  }
+
+  .contact-form .btn {
+    align-self: flex-start;
+    background: var(--accent);
+    color: var(--paper);
+    border: none;
+    padding: 13px 28px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .contact-form .btn:hover { background: #2e462e; }
+
+  .contact-form .form-note {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+
+  <div class="brand"><span style="font-family: 'Gill Sans MT', 'Gill Sans', Calibri, 'Trebuchet MS', sans-serif; font-weight: bold; font-size: 22px; letter-spacing: 0.5px;">
+  Occupied North
+</span></div>
+  <nav class="site">
+    <a href="#map">Map</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<section class="hero">
+
+  <div> 
+
+    <span class="advocacy-badge">ADVOCACY PROJECT</span>
+
+<style>
+.advocacy-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border: 1px solid rgba(255, 0, 0, 0.6);
+  border-radius: 999px;
+  color: #d10808;
+  font-family: sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: transparent;
+}
+</style>
+
+
+  </div>
+
+
+
+
+
+
+  <h1><span style="font-family: 'Gill Sans MT', 'Gill Sans', Calibri, 'Trebuchet MS', sans-serif; font-weight: bold; font-size: 48px; letter-spacing: 0.5px;">
+  Occupied North
+</span>
+</h1>
+
+  <!-- EDIT ME: the intro paragraph under the headline -->
+  <p><span style="font-family: 'Gill Sans MT', 'Gill Sans', Calibri, 'Trebuchet MS', sans-serif; font-weight: bold; font-size: 20px; letter-spacing: 0.5px;">
+  Eelam Tamil territories occupied by the Srilankan Armed Forces.
+</span></p>
+</section>
+
+<section class="map-section" id="map">
+  <h2 class="map-heading">Zoom in to View</h2>
+  <div class="map-frame">
+
+    <!-- ================================================================
+         >>> RIGHT HERE <<< — this is the ONLY line you need to touch
+         to link your Atlas map into the website.
+
+         Steps:
+         1. Open your map in Atlas.
+         2. Look for a "Share" or "Embed" option and copy the URL it
+            gives you (something like https://atlas.co/embed/xxxxxxx).
+         3. Paste that URL BETWEEN THE QUOTATION MARKS below, replacing
+            the placeholder text that's currently there. Keep the
+            quotation marks — only swap what's inside them.
+
+         Before:  src="REPLACE_WITH_YOUR_ATLAS_EMBED_LINK_HERE"
+         After:   src="https://atlas.co/embed/your-real-map-id"
+         ================================================================ -->
+    <iframe
+      src="https://app.atlas.co/shared/O8oAVNuTqUIb0YhaeA83"
+      title="Untitled map"
+      loading="lazy"
+      allowfullscreen>
+    </iframe>
+    <!-- ^^^ RIGHT HERE ^^^ — the src="..." line directly above is where
+         your Atlas map link goes. -->
+
+    <!--
+    Fallback panel — uncomment this block (remove the comment markers
+    around it) ONLY if your Atlas map refuses to load inside the iframe
+    above. If you use this, delete the iframe block above it.
+
+    Same rule applies: paste your link between the quotation marks in
+    href="REPLACE_WITH_YOUR_ATLAS_MAP_LINK_HERE".
+
+    <div class="map-fallback">
+      <p>Untitled — this map opens in a new tab.</p>
+      <a href="REPLACE_WITH_YOUR_ATLAS_MAP_LINK_HERE" target="_blank" rel="noopener">
+        Open the map on Atlas →
+      </a>
+    </div>
+    -->
+
+  </div>
+</section>
+
+<section class="about" id="about">
+  <h2><span style="font-family: 'Gill Sans MT', 'Gill Sans', Calibri, 'Trebuchet MS', sans-serif; font-weight: bold; font-size: 32px; letter-spacing: 0.5px;">
+  The Purpose of this Website
+</span></h2>
+  <p>Eelam Tamil territories remain heavily militarised with large areas still under heavy presence of Sri Lanka’s armed forces. </p>
+  <p>By visualising the presence of these armed men in a state which describes itself as a free and equal nation this website intends to create awareness to the people worldwide.</p>
+</section>
+
+<div class="legend">
+  <div class="card">
+    <h3>Army </h3>
+    <p>🟢 Represents Illegal Army facilities </p>
+  </div>
+  <div class="card">
+    <h3>Navy and Airforce</h3>
+    <p>🔵 Represents illegal Navy and Airforce facilities</p>
+  </div>
+  <div class="card">
+    <h3>Buddhist statues and temples</h3>
+    <p>🟠 Represents illegal Buddhist statues and temples</p>
+  </div>
+</div>
+
+<section class="contact" id="contact">
+  <h2>Contact</h2>
+  <p>Got any questions or would you like to contribute to creating awareness? Please don't hesitate to reach out.</p>
+
+
+  <form
+    class="contact-form"
+    action="https://formspree.io/f/mzepldpg"
+    method="POST">
+
+
+    <div>
+      <label for="full_name">Full name</label>
+      <input type="text" id="full_name" name="full_name" required>
+    </div>
+
+    <div>
+      <label for="email">Email address</label>
+      <input type="email" id="email" name="email" required>
+    </div>
+
+    <div>
+      <label for="message">Message</label>
+      <textarea id="message" name="message" required></textarea>
+    </div>
+
+    <button type="submit" class="btn">Send message</button>
+    <p class="form-note">Note: "I usually reply within a few days XO."</p>
+  </form>
+</section>
+
+<footer class="site">
+  <!-- EDIT ME: footer text -->
+  <span>Occupied North</span>
+  <span>
+
+    <span class="advocacy-badge">ADVOCACY PROJECT</span>
+
+<style>
+.advocacy-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border: 1px solid rgba(255, 0, 0, 0.6);
+  border-radius: 999px;
+  color: #d10808;
+  font-family: sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: transparent;
+}
+</style>
+</span>
+</footer>
+
+</body>
+</html>
