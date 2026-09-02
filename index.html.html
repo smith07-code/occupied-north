@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Occupied North</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --ink: #1b1812;
+    --paper: #ece9e2;
+    --paper-raised: #f7f5f0;
+    --line: #cfc9ba;
+    --accent: #9c1c0e;
+    --accent-tint: #f4e3df;
+    --muted: #6f6a5c;
+  }
+
+  html[data-theme="dark"] {
+    --ink: #ece7da;
+    --paper: #15130f;
+    --paper-raised: #1d1a14;
+    --line: #35312a;
+    --accent: #e2503a;
+    --accent-tint: #3a1c16;
+    --muted: #a49c89;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition: none !important; animation: none !important; }
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    line-height: 1.65;
+    transition: background 0.35s ease, color 0.35s ease;
+  }
+
+  @keyframes riseIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .meta-font {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+  }
+
+  a { color: inherit; }
+
+  /* ---------- Header ---------- */
+
+  header.site {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 6vw;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 1px 0 var(--accent);
+    backdrop-filter: saturate(1.1);
+  }
+
+  .brand {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    letter-spacing: 0.01em;
+  }
+
+  nav.site {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+  }
+
+  nav.site a {
+    position: relative;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.92rem;
+    padding-bottom: 3px;
+    transition: color 0.2s ease;
+  }
+
+  nav.site a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 100%;
+    bottom: 0;
+    height: 1px;
+    background: var(--accent);
+    transition: right 0.25s ease;
+  }
+
+  nav.site a:hover,
+  nav.site a:focus-visible { color: var(--accent); }
+  nav.site a:hover::after,
+  nav.site a:focus-visible::after { right: 0; }
+
+  .theme-toggle {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: var(--paper-raised);
+    color: var(--ink);
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: border-color 0.2s ease, transform 0.3s ease, color 0.2s ease;
+  }
+
+  .theme-toggle:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: rotate(20deg);
+  }
+
+  @media (max-width: 560px) {
+    header.site { flex-wrap: wrap; padding: 16px 6vw; }
+    nav.site { flex-wrap: wrap; gap: 8px 16px; order: 3; width: 100%; }
+  }
+
+  /* ---------- Tag / pill ---------- */
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 3px;
+    background: var(--accent-tint);
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 600;
+    border: 1px solid transparent;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  /* ---------- Hero ---------- */
+
+  .hero {
+    position: relative;
+    padding: 9vh 6vw 7vh;
+    max-width: 760px;
+    border-left: 3px solid var(--accent);
+    margin-left: 6vw;
+    padding-left: 5vw;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    left: -10%;
+    width: 480px;
+    height: 480px;
+    background: radial-gradient(circle, var(--accent-tint) 0%, transparent 68%);
+    opacity: 0.9;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .hero > * { position: relative; z-index: 1; }
+
+  @media (max-width: 700px) {
+    .hero { margin-left: 0; padding-left: 6vw; }
+  }
+
+  .hero .tag {
+    margin-bottom: 22px;
+    animation: riseIn 0.6s ease both;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.6rem, 8vw, 4.7rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 0 0 22px;
+    line-height: 1.0;
+    animation: riseIn 0.6s ease 0.08s both;
+  }
+
+  .hero p {
+    font-size: 1.15rem;
+    color: var(--muted);
+    max-width: 58ch;
+    margin: 0;
+    animation: riseIn 0.6s ease 0.16s both;
+  }
+
+  /* ---------- Sections ---------- */
+
+  section.map-section,
+  section.about,
+  section.contact {
+    padding: 0 6vw 8vh;
+  }
+
+  .section-head {
+    margin-bottom: 20px;
+  }
+
+  .section-head .tag { margin-bottom: 14px; }
+
+  .section-head h2 {
+    font-size: 1.9rem;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  section.map-section { scroll-margin-top: 84px; }
+  section.about { scroll-margin-top: 84px; max-width: 900px; }
+  section.contact { scroll-margin-top: 84px; }
+
+  .map-frame {
+    border: 1px solid var(--line);
+    background: var(--paper-raised);
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 4 / 5;
+    min-height: 420px;
+    box-shadow: 0 18px 40px -24px rgba(0, 0, 0, 0.35);
+  }
+
+  @media (min-width: 700px) {
+    .map-frame { aspect-ratio: 16 / 10; min-height: 600px; }
+  }
+
+  @media (min-width: 1100px) {
+    .map-frame { min-height: 760px; }
+  }
+
+  .map-frame iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+
+  .map-fallback {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: var(--muted);
+    text-align: center;
+    padding: 20px;
+  }
+
+  .map-fallback a { color: var(--accent); font-weight: 600; }
+
+  /* ---------- About + pull quote ---------- */
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+
+  @media (max-width: 800px) {
+    .about-grid { grid-template-columns: 1fr; }
+  }
+
+  .about-grid p {
+    color: var(--muted);
+    margin: 0 0 16px;
+  }
+
+  blockquote.pull {
+    margin: 0;
+    padding: 6px 0 6px 22px;
+    border-left: 3px solid var(--accent);
+    font-size: 1.35rem;
+    font-weight: 500;
+    line-height: 1.45;
+    color: var(--ink);
+    background: linear-gradient(90deg, var(--accent-tint), transparent 60%);
+  }
+
+  blockquote.pull p { color: var(--ink); margin: 0; }
+
+  /* ---------- Category cards ---------- */
+
+  .categories {
+    padding: 0 6vw 10vh;
+  }
+
+  .categories .section-head { max-width: 900px; }
+
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+
+  .category-grid .card {
+    background: var(--paper-raised);
+    padding: 26px 24px;
+    position: relative;
+    transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .category-grid .card:hover {
+    background: var(--paper);
+    transform: translateY(-3px);
+    box-shadow: 0 16px 30px -22px rgba(0, 0, 0, 0.4);
+    z-index: 1;
+  }
+
+  .category-grid .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+
+  .category-grid .card:hover::before { transform: scaleX(1); }
+
+  .category-grid .card .tag {
+    margin-bottom: 14px;
+  }
+
+  .category-grid .card h3 {
+    margin: 0 0 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .category-grid .card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.96rem;
+  }
+
+  /* ---------- Contact ---------- */
+
+  section.contact { max-width: 560px; }
+
+  section.contact > p { color: var(--muted); margin-bottom: 28px; }
+
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .contact-form label {
+    display: block;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .contact-form input,
+  .contact-form textarea {
+    width: 100%;
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    padding: 12px 14px;
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 1rem;
+    color: var(--ink);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .contact-form input:focus,
+  .contact-form textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-tint);
+  }
+
+  .contact-form textarea { min-height: 140px; resize: vertical; }
+
+  .contact-form .btn {
+    align-self: flex-start;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 13px 28px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+  }
+
+  .contact-form .btn:hover {
+    opacity: 0.94;
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px -12px var(--accent);
+  }
+
+  .contact-form .btn:active { transform: translateY(0); }
+
+  .contact-form .form-note {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  /* focus visibility */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* ---------- Footer ---------- */
+
+  footer.site {
+    border-top: 1px solid var(--line);
+    box-shadow: 0 -1px 0 var(--accent);
+    padding: 26px 6vw;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 0.85rem;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="brand">Occupied North</div>
+  <nav class="site">
+    <a href="#map">Map</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <button class="theme-toggle meta-font" id="themeToggle" type="button" aria-label="Toggle dark mode">◐</button>
+</header>
+
+<section class="hero">
+  <span class="tag">Advocacy Project</span>
+  <h1>Occupied North</h1>
+  <!-- EDIT ME: the intro paragraph under the headline -->
+  <p> Eelam Tamil territories occupied by the Srilankan Armed Forces.</p>
+</section>
+
+<section class="map-section" id="map">
+  <div class="section-head">
+    <span class="tag">Interactive map</span>
+    <h2>Zoom in to view</h2>
+  </div>
+  <div class="map-frame">
+
+    <iframe
+      src="https://app.atlas.co/shared/O8oAVNuTqUIb0YhaeA83"
+      title="Untitled map"
+      loading="lazy"
+      allowfullscreen>
+    </iframe>
+
+
+  </div>
+</section>
+
+<section class="about" id="about">
+  <div class="section-head">
+    <span class="tag">About</span>
+    <h2>The purpose of this website</h2>
+  </div>
+  <div class="about-grid">
+    <div>
+      <p>Eelam Tamil territories remain heavily militarised with large areas still under heavy presence of Sri Lanka’s armed forces.</p>
+      <p>By visualising these documented military installations and check points in the Eelam Tamil territories, This site intends to create awareness to people worldwide.</p>
+    </div>
+    <blockquote class="pull">
+      <p>Documenting the ground truth of the Northern Province, one location at a time.</p>
+    </blockquote>
+  </div>
+</section>
+
+<section class="categories">
+  <div class="section-head">
+    <span class="tag">What we track</span>
+    <h2>Categories on the map</h2>
+  </div>
+  <div class="category-grid">
+    <div class="card">
+      <span class="tag" style="background:transparent;color:var(--muted);padding-left:0;">🟢 Army</span>
+      <h3>Military presence</h3>
+      <p>Documented army installations and checkpoints across the region.</p>
+    </div>
+    <div class="card">
+      <span class="tag" style="background:transparent;color:var(--muted);padding-left:0;">🔵 Navy &amp; Air Force</span>
+      <h3>Naval &amp; air installations</h3>
+      <p>Coastal and airbase footprints in the Northern Province.</p>
+    </div>
+    <div class="card">
+      <span class="tag" style="background:transparent;color:var(--muted);padding-left:0;">🟠 Religious sites</span>
+      <h3>Buddhist statues &amp; temples</h3>
+      <p>Newly built or disputed religious installations in historically Tamil areas.</p>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="section-head">
+    <span class="tag">Contact</span>
+    <h2>Get in touch</h2>
+  </div>
+  <p>Got any questions or would you like to contribute to creating awareness? Please don't hesitate to reach out.</p>
+
+  <form
+    class="contact-form"
+    action="https://formspree.io/f/mzepldpg"
+    method="POST">
+
+    <div>
+      <label for="full_name">Full name</label>
+      <input type="text" id="full_name" name="full_name" required>
+    </div>
+
+    <div>
+      <label for="email">Email address</label>
+      <input type="email" id="email" name="email" required>
+    </div>
+
+    <div>
+      <label for="message">Message</label>
+      <textarea id="message" name="message" required></textarea>
+    </div>
+
+    <button type="submit" class="btn">Send message</button>
+    <p class="form-note">Note: "I usually reply within a few days.</p>
+  </form>
+</section>
+
+<footer class="site">
+  <span>Occupied North</span>
+  <span class="tag">Advocacy Project</span>
+</footer>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var btn = document.getElementById('themeToggle');
+    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (prefersDark) root.setAttribute('data-theme', 'dark');
+
+    btn.addEventListener('click', function () {
+      var isDark = root.getAttribute('data-theme') === 'dark';
+      if (isDark) {
+        root.removeAttribute('data-theme');
+      } else {
+        root.setAttribute('data-theme', 'dark');
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>
